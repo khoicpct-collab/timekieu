@@ -1,1 +1,1 @@
-python-3.11
+3.11.9  # Phiên bản cụ thể, không chung chung
