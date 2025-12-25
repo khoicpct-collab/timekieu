@@ -3,5 +3,6 @@ maxUploadSize = 200
 enableCORS = false
 enableXsrfProtection = true
 
-[browser]
-serverAddress = "localhost"
+# Tăng timeout cho build
+[runner]
+magicEnabled = false
