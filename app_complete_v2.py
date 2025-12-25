@@ -22,9 +22,6 @@ sys.excepthook = handle_uncaught_exception
 # --- Kết thúc phần bắt lỗi ---
 
 # PHẦN CODE CHÍNH CỦA BẠN BẮT ĐẦU TỪ ĐÂY...
-# import pandas as pd...
-# Các logic tiếp theo...
-import streamlit as st
 import pandas as pd
 import numpy as np
 import gspread
@@ -244,7 +241,8 @@ def get_google_client():
     """Kết nối đến Google Sheets"""
     try:
         # Ưu tiên dùng secrets từ Streamlit Cloud
-        if 'google_creds' in st.secrets:
+        # FIX: Kiểm tra st.secrets tồn tại trước khi truy cập
+        if hasattr(st, 'secrets') and 'google_creds' in st.secrets:
             scope = ['https://www.googleapis.com/auth/spreadsheets',
                     'https://www.googleapis.com/auth/drive']
             
@@ -777,7 +775,7 @@ def page_nhap_du_lieu(client):
             
             detail_reason = st.text_area("Lý do chi tiết", "")
             
-            submitted = st.form_submit_button("➕ THÊM VÀO DANH SÁCH", type="primary")
+            submitted = st.form_submit_button("➕ THÊM VÀO DANH SÁCH", type="secondary")
             
             if submitted:
                 # Thêm vào session state
@@ -1419,4 +1417,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
