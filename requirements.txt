@@ -1,6 +1,7 @@
-streamlit>=1.28.1
-pandas>=2.2.2
-numpy>=1.26.4
+# requirements.txt
+streamlit>=1.28,<1.53
+pandas>=2.2,<2.4  # Giới hạn dưới pandas 2.4
+numpy>=1.26,<2.0  # QUAN TRỌNG: Không dùng numpy 2.x nếu code chưa tương thích
 gspread>=6.0.0
 google-auth>=2.29.0
 streamlit-autorefresh==0.0.1
