@@ -220,28 +220,60 @@ def get_google_client():
     try:
         # Ưu tiên dùng secrets từ Streamlit Cloud
         if 'google_creds' in st.secrets:
-            creds_dict = dict(st.secrets.google_creds)
             scope = ['https://www.googleapis.com/auth/spreadsheets',
                     'https://www.googleapis.com/auth/drive']
+            
+            # Build credentials từ st.secrets
+            creds_dict = {
+                "type": st.secrets["google_creds"]["type"],
+                "project_id": st.secrets["google_creds"]["project_id"],
+                "private_key_id": st.secrets["google_creds"]["private_key_id"],
+                "private_key": st.secrets["google_creds"]["private_key"],
+                "client_email": st.secrets["google_creds"]["client_email"],
+                "client_id": st.secrets["google_creds"]["client_id"],
+                "auth_uri": st.secrets["google_creds"]["auth_uri"],
+                "token_uri": st.secrets["google_creds"]["token_uri"],
+                "auth_provider_x509_cert_url": st.secrets["google_creds"]["auth_provider_x509_cert_url"],
+                "client_x509_cert_url": st.secrets["google_creds"]["client_x509_cert_url"],
+                "universe_domain": st.secrets["google_creds"]["universe_domain"]
+            }
+            
             credentials = Credentials.from_service_account_info(creds_dict, scopes=scope)
-        
-        # Hoặc dùng file upload
+            client = gspread.authorize(credentials)
+            st.success("✅ Kết nối Google Sheets thành công!")
+            return client
+            
+        # Hoặc dùng file upload từ sidebar
         elif 'credentials' in st.session_state:
-            creds_dict = json.loads(st.session_state.credentials)
-            scope = ['https://www.googleapis.com/auth/spreadsheets',
-                    'https://www.googleapis.com/auth/drive']
-            credentials = Credentials.from_service_account_info(creds_dict, scopes=scope)
+            try:
+                creds_dict = json.loads(st.session_state.credentials.decode('utf-8') if isinstance(st.session_state.credentials, bytes) else st.session_state.credentials)
+                scope = ['https://www.googleapis.com/auth/spreadsheets',
+                        'https://www.googleapis.com/auth/drive']
+                credentials = Credentials.from_service_account_info(creds_dict, scopes=scope)
+                client = gspread.authorize(credentials)
+                st.success("✅ Kết nối Google Sheets thành công (từ file upload)!")
+                return client
+            except Exception as e:
+                st.error(f"❌ Lỗi đọc credentials từ file upload: {str(e)}")
+                return None
         
         # Hoặc dùng file local (cho development)
         else:
-            credentials = Credentials.from_service_account_file(
-                'credentials.json',
-                scopes=['https://www.googleapis.com/auth/spreadsheets',
-                       'https://www.googleapis.com/auth/drive']
-            )
-        
-        client = gspread.authorize(credentials)
-        return client
+            try:
+                credentials = Credentials.from_service_account_file(
+                    'credentials.json',
+                    scopes=['https://www.googleapis.com/auth/spreadsheets',
+                           'https://www.googleapis.com/auth/drive']
+                )
+                client = gspread.authorize(credentials)
+                st.success("✅ Kết nối Google Sheets thành công (từ file local)!")
+                return client
+            except FileNotFoundError:
+                st.warning("⚠️ Không tìm thấy file credentials.json")
+                return None
+            except Exception as e:
+                st.error(f"❌ Lỗi đọc file local: {str(e)}")
+                return None
         
     except Exception as e:
         st.error(f"❌ Lỗi kết nối Google Sheets: {str(e)}")
