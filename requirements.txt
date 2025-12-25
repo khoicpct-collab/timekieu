@@ -1,7 +1,6 @@
-# requirements.txt (Nội dung mới)
-streamlit==1.52.2
+streamlit==1.28.1
 pandas==2.2.2
-numpy==1.26.4  # QUAN TRỌNG: Rollback về bản 1.x ổn định
+numpy==1.26.4
 gspread==6.2.1
 google-auth==2.45.0
-streamlit-autorefresh==0.0.1
+# Xóa streamlit-autorefresh nếu không bắt buộc
