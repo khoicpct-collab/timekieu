@@ -1,5 +1,30 @@
 # app_complete_v2.py
 import streamlit as st
+import sys
+import traceback
+
+# --- Cơ chế bắt lỗi toàn cục ---
+def handle_uncaught_exception(exc_type, exc_value, exc_traceback):
+    """Chuyển mọi lỗi không bắt được thành thông báo trên giao diện Streamlit."""
+    # Hiển thị lỗi chi tiết cho developer (có thể ẩn trong production)
+    error_details = "".join(traceback.format_exception(exc_type, exc_value, exc_traceback))
+    st.error("💥 Ứng dụng gặp lỗi nghiêm trọng!")
+    with st.expander("Chi tiết lỗi (Dành cho quản trị viên)"):
+        st.code(error_details)
+    
+    # Ghi log (sẽ xuất hiện trong Streamlit Cloud Logs)
+    sys.__excepthook__(exc_type, exc_value, exc_traceback)
+    
+    # Giữ cho app không tự đóng, hiển thị thông báo lỗi
+    st.stop()
+
+sys.excepthook = handle_uncaught_exception
+# --- Kết thúc phần bắt lỗi ---
+
+# PHẦN CODE CHÍNH CỦA BẠN BẮT ĐẦU TỪ ĐÂY...
+# import pandas as pd...
+# Các logic tiếp theo...
+import streamlit as st
 import pandas as pd
 import numpy as np
 import gspread
@@ -1394,3 +1419,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
