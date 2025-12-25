@@ -1,4 +1,7 @@
-streamlit==1.28.1
-pandas==2.2.2
-numpy==1.26.4
-streamlit-autorefresh  # KHÔNG ghi phiên bản (hoặc =0.0.1 nếu muốn cụ thể)
+# CORE với phiên bản tương thích được kiểm chứng
+streamlit>=1.28,<1.29
+pandas>=2.2,<2.3
+numpy>=1.26,<1.27
+
+# Optional - chỉ thêm nếu THỰC SỰ cần
+# streamlit-autorefresh>=0.0.1
